@@ -749,3 +749,41 @@ app.patch('/users/:id', (req, res) => {
     res.status(500).json({ error: "Error al actualizar usuario", details: err.message });
   }
 });
+
+//Método DELETE – Eliminación de recursos
+
+// ================== USERS ==================
+// DELETE /users/:id
+app.delete('/users/:id', (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const index = users.findIndex(u => u.id === id);
+
+    if (index === -1) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    users.splice(index, 1); // elimina el usuario
+    res.status(204).send(); // sin contenido
+  } catch (err) {
+    res.status(500).json({ error: "Error al eliminar usuario", details: err.message });
+  }
+});
+
+// ================== PLANS (WORKOUTS) ==================
+// DELETE /workouts/:id  (planes de entrenamiento)
+app.delete('/workouts/:id', (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const index = plans.findIndex(p => p.id === id);
+
+    if (index === -1) {
+      return res.status(404).json({ error: "Workout no encontrado" });
+    }
+
+    plans.splice(index, 1); // elimina el plan/workout
+    res.status(204).send(); // sin contenido
+  } catch (err) {
+    res.status(500).json({ error: "Error al eliminar workout", details: err.message });
+  }
+});
