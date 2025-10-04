@@ -701,3 +701,51 @@ app.post('/reports', (req, res) => {
     res.status(500).json({ error: "Error al crear informe", details: err.message });
   }
 });
+
+// ================== USERS ==================
+
+// PUT /users/:id → actualización completa
+app.put('/users/:id', (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { name, email } = req.body;
+
+    // Validaciones
+    if (!name || !email) {
+      return res.status(400).json({ error: "Faltan datos obligatorios: name y email" });
+    }
+
+    const userIndex = users.findIndex(u => u.id === id);
+    if (userIndex === -1) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    // Reemplaza el usuario completo (menos el id)
+    users[userIndex] = { id, name, email };
+
+    res.status(200).json({ message: "Usuario actualizado completamente", user: users[userIndex] });
+  } catch (err) {
+    res.status(500).json({ error: "Error al actualizar usuario", details: err.message });
+  }
+});
+
+// PATCH /users/:id → actualización parcial
+app.patch('/users/:id', (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { name, email } = req.body;
+
+    const user = users.find(u => u.id === id);
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    // Modifica solo los campos enviados
+    if (name) user.name = name;
+    if (email) user.email = email;
+
+    res.status(200).json({ message: "Usuario actualizado parcialmente", user });
+  } catch (err) {
+    res.status(500).json({ error: "Error al actualizar usuario", details: err.message });
+  }
+});
